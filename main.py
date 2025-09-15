@@ -1,5 +1,9 @@
 import os
 import rich
+import sys
+import datetime
+
+from datetime import date
 
 from rich import print
 from rich.console import Console
@@ -7,6 +11,15 @@ from rich.panel import Panel
 from rich.progress_bar import ProgressBar
 from rich.table import Table
 from rich.text import Text
+
+
+args = sys.argv
+print(args)
+
+goal_fat = 0
+goal_carbs = 0
+goal_protein = 0
+goal_fiber = 0
 
 
 def summary_print():
@@ -45,7 +58,10 @@ def table_today():
     console = Console()
 
     table = Table(
-        title="Today's log", box=None, width=91, title_style="bold italic white"
+        title="Log",
+        box=None,
+        width=91,
+        title_style="bold italic white",
     )
     table.add_column("Description", min_width=20, justify="center", header_style="bold")
     table.add_column("Amount", min_width=8, justify="center", header_style="bold")
@@ -91,8 +107,24 @@ def table_today():
 #           item name (prefill with banana), weight, fat, carbs, protein, fiber
 #           add to library
 #           prompt again confirming daily entry for previous args entered for "banana"
+# - args to edit existing entry
+#   calterm edit today 1 40g
+#   calterm edit 20250815 5 40g
+#   can use either today or date, followed by line # and new amount
+#
 # - args to check specific day
 #   calterm check 20250815 (iso-date)
+
+
+def date_output():
+    console = Console()
+    todays_date = date.today().strftime("%b %d, %Y")
+    try:
+        if args[2]:
+            entered_date = date.fromisoformat(args[2]).strftime("%b %d, %Y")
+            console.print("Previous - ", entered_date, justify="center")
+    except:
+        console.print("Today - ", todays_date, justify="center")
 
 
 def main():
@@ -102,10 +134,12 @@ def main():
         justify="center",
         style="bold white",
     )
+    date_output()
     print()
     summary_print()
     print()
     table_today()
+    print()
 
 
 if __name__ == "__main__":
