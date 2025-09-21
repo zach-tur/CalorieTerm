@@ -1,11 +1,13 @@
 import os
-import rich
+
+# import rich
 import sys
 import datetime
 
 from datetime import date
 
-from rich import print
+# from rich import print
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress_bar import ProgressBar
@@ -118,13 +120,24 @@ def table_today():
 
 def date_output():
     console = Console()
-    todays_date = date.today().strftime("%b %d, %Y")
     try:
-        if args[2]:
-            entered_date = date.fromisoformat(args[2]).strftime("%b %d, %Y")
-            console.print("Previous - ", entered_date, justify="center")
+        if args[1] == "check":
+            entered_date = date.fromisoformat(args[2]).strftime("%-m/%-d/%Y")
+            console.print(
+                f"Prior - {entered_date}",
+                style="bold italic red",
+                justify="center",
+                highlight=False,
+            )
+
     except:
-        console.print("Today - ", todays_date, justify="center")
+        todays_date = date.today().strftime("%-m/%-d/%Y")
+        console.print(
+            f"Today - {todays_date}",
+            style="italic",
+            justify="center",
+            highlight=False,
+        )
 
 
 def main():
