@@ -5,7 +5,7 @@ import sys
 import datetime
 
 from datetime import date
-
+from enum import Enum
 # from rich import print
 
 from rich.console import Console
@@ -22,6 +22,10 @@ goal_fat = 0
 goal_carbs = 0
 goal_protein = 0
 goal_fiber = 0
+
+
+Arg_Options = Enum("Args", ["add", "check", "edit"])
+Edit_Options = Enum("Edit", ["log", "library"])
 
 
 def summary_print():
@@ -102,7 +106,8 @@ def table_today():
 
 # for entry functions:
 # - args to input new daily item:
-#   calterm add banana 50g
+#   calterm add
+#       input item name, weight
 #   if item banana doesn't exist in food library, prompt for:
 #       item "banana" doesn't exist in library; add new item into library?
 #       on no, terminate, on yes prompt for:
@@ -116,6 +121,27 @@ def table_today():
 #
 # - args to check specific day
 #   calterm check 20250815 (iso-date)
+
+
+def log_add():
+    item_name = input(f"Enter item name: ")
+    return
+
+
+def log_check():
+    return
+
+
+def log_edit():
+    return
+
+
+def library_input():
+    return
+
+
+def library_edit():
+    return
 
 
 def date_output():
@@ -141,6 +167,27 @@ def date_output():
 
 
 def main():
+    try:
+        match Arg_Options:
+            case Arg_Options.add:
+                log_add()
+                return
+            case Arg_Options.check:
+                log_check()
+                return
+
+            case Arg_Options.edit:
+                match Edit_Options:
+                    case Edit_Options.log:
+                        log_edit()
+                        return
+                    case Edit_Options.library:
+                        library_edit()
+                        return
+
+    except Exception as e:
+        print(f"Error: {e}")
+
     console = Console()
     console.print(
         "\nCalorieTerm",
