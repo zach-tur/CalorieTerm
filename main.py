@@ -18,14 +18,12 @@ from rich.text import Text
 args = sys.argv
 print(args)
 
+todays_date = date.today().strftime("%-m/%-d/%Y")
+
 goal_fat = 0
 goal_carbs = 0
 goal_protein = 0
 goal_fiber = 0
-
-
-Arg_Options = Enum("Args", ["add", "check", "edit"])
-Edit_Options = Enum("Edit", ["log", "library"])
 
 
 def summary_print():
@@ -124,7 +122,22 @@ def table_today():
 
 
 def log_add():
-    item_name = input(f"Enter item name: ")
+    console = Console()
+    console.print(f"Adding new item to log...", style="red italic", justify="center")
+    input_date = (
+        console.input(
+            Text(
+                "Use todays date (press enter) or input desired date to add to: ",
+                style="bold",
+            )
+        )
+        or todays_date
+    )
+    item_name = console.input(Text(f"Enter item name: ", style="bold"))
+    item_g = console.input(
+        Text(f"Enter item weigh in grams (input only #): ", style="bold")
+    )
+    console.print(f"Added item to log for {input_date}:\n{item_name} - {item_g}")
     return
 
 
@@ -157,7 +170,6 @@ def date_output():
             )
 
     except:
-        todays_date = date.today().strftime("%-m/%-d/%Y")
         console.print(
             f"Today - {todays_date}",
             style="italic",
@@ -166,35 +178,40 @@ def date_output():
         )
 
 
-def main():
-    try:
-        match Arg_Options:
-            case Arg_Options.add:
-                log_add()
-                return
-            case Arg_Options.check:
-                log_check()
-                return
-
-            case Arg_Options.edit:
-                match Edit_Options:
-                    case Edit_Options.log:
-                        log_edit()
-                        return
-                    case Edit_Options.library:
-                        library_edit()
-                        return
-
-    except Exception as e:
-        print(f"Error: {e}")
-
+def main(args):
     console = Console()
     console.print(
         "\nCalorieTerm",
         justify="center",
         style="bold white",
     )
-    date_output()
+
+    try:
+        match args[1]:
+            case "add":
+                log_add()
+            case "check":
+                log_check()
+                return
+
+            case "edit":
+                match args[2]:
+                    case "log":
+                        log_edit()
+                        return
+                    case "library":
+                        library_edit()
+                        return
+                    case _:
+                        return
+            case _:
+                print("case _:")
+                return
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    date_output()  # need to fix how this is handled, currently not printing due to args
     print()
     summary_print()
     print()
@@ -203,4 +220,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(args)
