@@ -58,6 +58,7 @@ def summary_print():
     return
 
 
+# TODO change this to work for any date including today
 def table_today():
     console = Console()
 
@@ -124,6 +125,8 @@ def table_today():
 def log_add():
     console = Console()
     console.print(f"Adding new item to log...", style="red italic", justify="center")
+    # TODO edit to use month and day only (e.g. 910 for sep 10), which defaults to current year.
+    # can view previous year by just typing in the year (e.g. 91024 for sep 10 2024)
     input_date = (
         console.input(
             Text(
@@ -141,6 +144,7 @@ def log_add():
     return
 
 
+# TODO remove date arg from command line, prompt for date instead when check is used
 def log_check():
     return
 
