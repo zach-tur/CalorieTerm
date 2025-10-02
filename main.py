@@ -104,22 +104,19 @@ def table_today():
 
 
 # for entry functions:
-# - args to input new daily item:
-#   calterm add
-#       input item name, weight
+# Library currently not added, so these lines are for future additions:
 #   if item banana doesn't exist in food library, prompt for:
 #       item "banana" doesn't exist in library; add new item into library?
 #       on no, terminate, on yes prompt for:
 #           item name (prefill with banana), weight, fat, carbs, protein, fiber
 #           add to library
 #           prompt again confirming daily entry for previous args entered for "banana"
-# - args to edit existing entry
-#   calterm edit today 1 40g
-#   calterm edit 20250815 5 40g
-#   can use either today or date, followed by line # and new amount
 #
-# - args to check specific day
-#   calterm check 20250815 (iso-date)
+# - args to edit existing entry (need item # for each entry, listed in order of entry)
+#       calterm edit date line_item edit_item edit_amount
+#       calterm edit today 1 fat 5g
+#       calterm edit 20250815 5 protein 16g
+#
 
 
 # TODO remove date arg from command line, prompt for date instead when check is used
@@ -147,6 +144,7 @@ def log_add():
             or todays_date
         )
 
+        # Input of item to add
         while True:
             item_inputs = console.input(
                 Text(
@@ -156,6 +154,7 @@ def log_add():
             )
             input_list = item_inputs.split()
 
+            # Input validations
             if len(input_list) != 6:
                 console.print(
                     f"Invalid input:\n{input_list}\nTry again", style="italic red"
@@ -196,18 +195,18 @@ def log_edit():
     return
 
 
-def library_add():
-    console = Console()
-    console.print(
-        f"Adding new entry to library...", style="red italic", justify="center"
-    )
-    return
+# def library_add():
+#     console = Console()
+#     console.print(
+#         f"Adding new entry to library...", style="red italic", justify="center"
+#     )
+#     return
 
 
-def library_edit():
-    console = Console()
-    console.print(f"Editiing entry in library...", style="red italic", justify="center")
-    return
+# def library_edit():
+#    console = Console()
+#    console.print(f"Editiing entry in library...", style="red italic", justify="center")
+#    return
 
 
 def date_output():
@@ -251,16 +250,16 @@ def main(args):
                 match args[2]:
                     case "log":
                         log_add()
-                    case "lib":
-                        library_add()
+                    # case "lib":
+                    #    library_add()
             case "edit":
                 match args[2]:
                     case "log":
                         log_edit()
                         return
-                    case "library":
-                        library_edit()
-                        return
+                    # case "library":
+                    #    library_edit()
+                    #    return
                     case _:
                         return
             case _:
