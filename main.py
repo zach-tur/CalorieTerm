@@ -147,8 +147,7 @@ def log_add():
             or todays_date
         )
 
-        input_list = []
-        while len(input_list) != 6:
+        while True:
             item_inputs = console.input(
                 Text(
                     f"Enter item name, weight, fat, carbs, protein, and fiber (e.g. banana 105 0 27 1 3):\n--> ",
@@ -156,10 +155,28 @@ def log_add():
                 )
             )
             input_list = item_inputs.split()
+
             if len(input_list) != 6:
                 console.print(
                     f"Invalid input:\n{input_list}\nTry again", style="italic red"
                 )
+                continue
+
+            is_valid_input = True
+            for input in input_list[1:]:
+                try:
+                    input_int = int(input)
+                    continue
+                except ValueError:
+                    is_valid_input = False
+                    console.print(
+                        f"Inputs are not integers:\n{input_list}\nTry again",
+                        style="italic red",
+                    )
+                    break
+
+            if is_valid_input == True:
+                break
 
         console.print(
             f"Added item to log for {input_date}:\n",
