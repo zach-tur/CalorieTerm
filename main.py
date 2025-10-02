@@ -122,9 +122,16 @@ def table_today():
 #   calterm check 20250815 (iso-date)
 
 
+# TODO remove date arg from command line, prompt for date instead when check is used
+def log_check():
+    console = Console()
+    console.print(f"Checking log...", style="red italic", justify="center")
+    return
+
+
 def log_add():
     console = Console()
-    console.print(f"Adding new item to log...", style="red italic", justify="center")
+    console.print(f"Adding new entry to log...", style="red italic", justify="center")
     # TODO edit to use month and day only (e.g. 910 for sep 10), which defaults to current year.
     # can view previous year by just typing in the year (e.g. 91024 for sep 10 2024)
     input_date = (
@@ -144,20 +151,23 @@ def log_add():
     return
 
 
-# TODO remove date arg from command line, prompt for date instead when check is used
-def log_check():
-    return
-
-
 def log_edit():
+    console = Console()
+    console.print(f"Editing entry in log...", style="red italic", justify="center")
     return
 
 
-def library_input():
+def library_add():
+    console = Console()
+    console.print(
+        f"Adding new entry to library...", style="red italic", justify="center"
+    )
     return
 
 
 def library_edit():
+    console = Console()
+    console.print(f"Editiing entry in library...", style="red italic", justify="center")
     return
 
 
@@ -192,12 +202,15 @@ def main(args):
 
     try:
         match args[1]:
-            case "add":
-                log_add()
             case "check":
                 log_check()
                 return
-
+            case "add":
+                match args[2]:
+                    case "log":
+                        log_add()
+                    case "lib":
+                        library_add()
             case "edit":
                 match args[2]:
                     case "log":
