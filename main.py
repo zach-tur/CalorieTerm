@@ -134,21 +134,43 @@ def log_add():
     console.print(f"Adding new entry to log...", style="red italic", justify="center")
     # TODO edit to use month and day only (e.g. 910 for sep 10), which defaults to current year.
     # can view previous year by just typing in the year (e.g. 91024 for sep 10 2024)
-    input_date = (
-        console.input(
-            Text(
-                "Use todays date (press enter) or input desired date to add to: ",
-                style="bold",
+    try:
+        input_date = (
+            console.input(
+                Text.assemble(
+                    "Use todays date ",
+                    (f"{todays_date}", "italic blue"),
+                    " (press enter) or input date: ",
+                    style="bold",
+                )
             )
+            or todays_date
         )
-        or todays_date
-    )
-    item_name = console.input(Text(f"Enter item name: ", style="bold"))
-    item_g = console.input(
-        Text(f"Enter item weigh in grams (input only #): ", style="bold")
-    )
-    console.print(f"Added item to log for {input_date}:\n{item_name} - {item_g}")
-    return
+
+        input_list = []
+        while len(input_list) != 6:
+            item_inputs = console.input(
+                Text(
+                    f"Enter item name, weight, fat, carbs, protein, and fiber (e.g. banana 105 0 27 1 3):\n--> ",
+                    style="bold",
+                )
+            )
+            input_list = item_inputs.split()
+            if len(input_list) != 6:
+                console.print(
+                    f"Invalid input:\n{input_list}\nTry again", style="italic red"
+                )
+
+        console.print(
+            f"Added item to log for {input_date}:\n",
+            f"{input_list[0]} {input_list[1]}g:",
+            f"Fat {input_list[1]}g, ",
+            f"Carbs {input_list[2]}g, ",
+            f"Protein {input_list[3]}g, ",
+            f"Fiber {input_list[4]}g",
+        )
+    except Exception as e:
+        console.print(f"Error: {e}")
 
 
 def log_edit():
@@ -183,13 +205,16 @@ def date_output():
                 highlight=False,
             )
 
-    except:
-        console.print(
-            f"Today - {todays_date}",
-            style="italic",
-            justify="center",
-            highlight=False,
-        )
+        else:
+            console.print(
+                f"Today - {todays_date}",
+                style="italic",
+                justify="center",
+                highlight=False,
+            )
+
+    except Exception as e:
+        console.print(f"Error: {e}")
 
 
 def main(args):
@@ -225,15 +250,14 @@ def main(args):
                 print("case _:")
                 return
 
+        date_output()  # need to fix how this is handled, currently not printing due to args
+        print()
+        summary_print()
+        print()
+        table_today()
+        print()
     except Exception as e:
         print(f"Error: {e}")
-
-    date_output()  # need to fix how this is handled, currently not printing due to args
-    print()
-    summary_print()
-    print()
-    table_today()
-    print()
 
 
 if __name__ == "__main__":
