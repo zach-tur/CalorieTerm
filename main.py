@@ -145,7 +145,7 @@ def log_add():
             )
             or todays_date
         )
-
+        input_integers = []
         # Input of item to add
         while True:
             item_inputs = console.input(
@@ -167,6 +167,7 @@ def log_add():
             for input in input_list[1:]:
                 try:
                     input_int = int(input)
+                    input_integers.append(input_int)
                     continue
                 except ValueError:
                     is_valid_input = False
@@ -177,19 +178,37 @@ def log_add():
                     break
 
             if is_valid_input == True:
+                item_dict = {
+                    "date": input_date,
+                    "name": input_list[0],
+                    "weight": input_integers[0],
+                    "fat": input_integers[1],
+                    "carbs": input_integers[2],
+                    "protein": input_integers[3],
+                    "fiber": input_integers[4],
+                }
+
+                # add item to log file here
+                # with open("logfile") as f:
+                # f.write(f"{input_date} {input})
+
+                console.print(
+                    Text.assemble(
+                        (f"Added item to log for {item_dict['date']}:\n", "bold"),
+                        (
+                            f"{item_dict['name']} {item_dict['weight']}g:  ",
+                            "blue bold italic",
+                        ),
+                        (f"Fat {item_dict['fat']}g  ", "yellow"),
+                        (f"Carbs {item_dict['carbs']}g  ", "green"),
+                        (f"Protein {item_dict['protein']}g  ", "red3"),
+                        (f"Fiber {item_dict['fiber']}g", "tan"),
+                        ("\n"),
+                    )
+                )
+
                 break
 
-        console.print(
-            Text.assemble(
-                (f"Added item to log for {input_date}:\n", "bold"),
-                (f"{input_list[0]} {input_list[1]}g:  ", "blue bold italic"),
-                (f"Fat {input_list[1]}g  ", "yellow"),
-                (f"Carbs {input_list[2]}g  ", "green"),
-                (f"Protein {input_list[3]}g  ", "red3"),
-                (f"Fiber {input_list[4]}g", "tan"),
-                ("\n"),
-            )
-        )
     except Exception as e:
         console.print(f"Error: {e}")
 
