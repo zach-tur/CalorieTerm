@@ -1,3 +1,4 @@
+import json
 import os
 
 # import rich
@@ -15,6 +16,7 @@ from rich.table import Table
 from rich.text import Text
 
 
+console = Console()
 args = sys.argv
 print(args)
 
@@ -25,6 +27,30 @@ goal_fat = 0
 goal_carbs = 0
 goal_protein = 0
 goal_fiber = 0
+
+
+def load_log_entries(log_file_path, console_obj, target_date=None):
+    entries = []
+    try:
+        with open(log_file_path, "r") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        entry = json.loads(line)
+                        if target_date is None or entry.get("date") == target_date:
+                            entries.append(entry)
+                    except json.JSONDecodeError:
+                        console_obj.print(
+                            f"Skipping malformed log entry: {line.strip()}",
+                            style="italic yellow",
+                        )
+    except FileNotFoundError:
+        console_obj.print(f"Log file '{log_file_path}' not found.", style="italic blue")
+    except Exception as e:
+        console_obj.print(
+            f"Error reading log file '{log_file_path}': {e}", style="italic red"
+        )
+    return entries
 
 
 def setup_log_files(base_log_dir="./logs"):
@@ -138,9 +164,24 @@ def table_today():
 #
 
 
+def date_input():
+    global input_date
+    input_date = (
+        console.input(
+            Text.assemble(
+                "Use todays date ",
+                (f"{todays_date}", "italic blue"),
+                " (press enter) or input date: ",
+                style="bold",
+            )
+        )
+        or todays_date
+    )
+    return input_date
+
+
 # TODO remove date arg from command line, prompt for date instead when check is used
 def log_check(log_path):
-    console = Console()
     console.print(f"Checking log...", style="red italic", justify="center")
     return
 
@@ -199,6 +240,7 @@ def log_add(log_path):
 
             if is_valid_input == True:
                 item_dict = {
+                    "entry": 0,
                     "date": input_date,
                     "name": input_list[0],
                     "weight": input_integers[0],
@@ -209,8 +251,9 @@ def log_add(log_path):
                 }
 
                 # add item to log file here
-                # with open("logfile") as f:
-                # f.write(f"{input_date} {input})
+                with open("log_path", "a") as f:
+                    json_line = json.dumps(item_dict)
+                    f.write(json_line + "\n")
 
                 console.print(
                     Text.assemble(
@@ -301,6 +344,7 @@ def main(args):
         return
     log_path = file_paths["food_log"]
     goals_path = file_paths["current_goals"]
+
     # arg check for which function to run
     try:
         match args[1]:
