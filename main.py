@@ -129,7 +129,24 @@ def log_check():
 
 def log_add():
     console = Console()
+    log_dir_path = os.path.abspath("./logs")
+    log_file_name = "full_log.log"
+    goals_file_name = "current_goals.log"
+
+    try:
+        os.makedirs(log_dir_path, exist_ok=True)
+        log_file_full_path = os.path.join(log_dir_path, log_file_name)
+        console.print(
+            Text.assemble(
+                (f"Log directory {log_dir_path} ensured."),
+                (f"Log file will be {log_file_full_path}"),
+            )
+        )
+    except OSError as e:
+        console.print(f"Error creating log directory: {e}", style="italic red")
+
     console.print(f"Adding new entry to log...", style="red italic", justify="center")
+
     # TODO edit to use month and day only (e.g. 910 for sep 10), which defaults to current year.
     # can view previous year by just typing in the year (e.g. 91024 for sep 10 2024)
     try:
@@ -256,6 +273,15 @@ def date_output():
 
     except Exception as e:
         console.print(f"Error: {e}")
+
+
+# TODO set this up, required for display to function accurately
+def set_goals():
+    console = Console()
+    log_dir_path = os.path.abspath("./logs")
+    log_file_name = "full_log.log"
+    goals_file_name = "current_goals.log"
+    pass
 
 
 def main(args):
