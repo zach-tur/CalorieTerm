@@ -27,6 +27,24 @@ goal_protein = 0
 goal_fiber = 0
 
 
+def setup_log_files(base_log_dir="./logs"):
+    console = Console()
+    log_file_name = "full_log.log"
+    goals_file_name = "current_goals.log"
+    log_paths = {}
+
+    try:
+        os.makedirs(base_log_dir, exist_ok=True)
+    except OSError as e:
+        console.print(f"Error creating log directory: {e}", style="italic red")
+        return None
+
+    log_paths["food_log"] = os.path.join(base_log_dir, "food_log.txt")
+    log_paths["current_goals"] = os.path.join(base_log_dir, "current_goals.txt")
+
+    return log_paths
+
+
 def summary_print():
     console = Console()
 
@@ -121,29 +139,14 @@ def table_today():
 
 
 # TODO remove date arg from command line, prompt for date instead when check is used
-def log_check():
+def log_check(log_path):
     console = Console()
     console.print(f"Checking log...", style="red italic", justify="center")
     return
 
 
-def log_add():
+def log_add(log_path):
     console = Console()
-    log_dir_path = os.path.abspath("./logs")
-    log_file_name = "full_log.log"
-    goals_file_name = "current_goals.log"
-
-    try:
-        os.makedirs(log_dir_path, exist_ok=True)
-        log_file_full_path = os.path.join(log_dir_path, log_file_name)
-        console.print(
-            Text.assemble(
-                (f"Log directory {log_dir_path} ensured."),
-                (f"Log file will be {log_file_full_path}"),
-            )
-        )
-    except OSError as e:
-        console.print(f"Error creating log directory: {e}", style="italic red")
 
     console.print(f"Adding new entry to log...", style="red italic", justify="center")
 
@@ -230,7 +233,7 @@ def log_add():
         console.print(f"Error: {e}")
 
 
-def log_edit():
+def log_edit(log_path=None):
     console = Console()
     console.print(f"Editing entry in log...", style="red italic", justify="center")
     return
@@ -254,7 +257,7 @@ def date_output():
     console = Console()
     try:
         # if args[1] == "check":
-        # entered_date = date.fromisoformat(args[2]).strftime("%-m/%-d/%Y")
+        # entered_date = date.fromisoformat(arfile_pathgs[2]).strftime("%-m/%-d/%Y")
         if input_date:
             console.print(
                 f"Prior - {input_date}",
@@ -276,11 +279,9 @@ def date_output():
 
 
 # TODO set this up, required for display to function accurately
-def set_goals():
+def set_goals(goals_path="None"):
     console = Console()
-    log_dir_path = os.path.abspath("./logs")
-    log_file_name = "full_log.log"
-    goals_file_name = "current_goals.log"
+    console.print("Current goals:\n")
     pass
 
 
@@ -292,27 +293,38 @@ def main(args):
         style="bold white",
     )
 
+    file_paths = setup_log_files()
+    if file_paths == None:
+        console.print(
+            "FATAL ERROR: Could not set up log files. Exiting.", style="red bold"
+        )
+        return
+    log_path = file_paths["food_log"]
+    goals_path = file_paths["current_goals"]
+    # arg check for which function to run
     try:
         match args[1]:
             case "check":
-                log_check()
+                log_check(log_path)
                 return
             case "add":
                 match args[2]:
                     case "log":
-                        log_add()
+                        log_add(log_path)
                     # case "lib":
                     #    library_add()
             case "edit":
                 match args[2]:
                     case "log":
-                        log_edit()
+                        log_edit(log_path)
                         return
                     # case "library":
                     #    library_edit()
                     #    return
                     case _:
                         return
+            case "goals":
+                set_goals(goals_path)
             case _:
                 print("case _:")
                 return
