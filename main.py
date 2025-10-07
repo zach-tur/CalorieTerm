@@ -19,6 +19,7 @@ args = sys.argv
 print(args)
 
 todays_date = date.today().strftime("%-m/%-d/%Y")
+input_date = None
 
 goal_fat = 0
 goal_carbs = 0
@@ -132,6 +133,7 @@ def log_add():
     # TODO edit to use month and day only (e.g. 910 for sep 10), which defaults to current year.
     # can view previous year by just typing in the year (e.g. 91024 for sep 10 2024)
     try:
+        global input_date
         input_date = (
             console.input(
                 Text.assemble(
@@ -178,12 +180,15 @@ def log_add():
                 break
 
         console.print(
-            f"Added item to log for {input_date}:\n",
-            f"{input_list[0]} {input_list[1]}g:",
-            f"Fat {input_list[1]}g, ",
-            f"Carbs {input_list[2]}g, ",
-            f"Protein {input_list[3]}g, ",
-            f"Fiber {input_list[4]}g",
+            Text.assemble(
+                (f"Added item to log for {input_date}:\n", "bold"),
+                (f"{input_list[0]} {input_list[1]}g:  ", "blue bold italic"),
+                (f"Fat {input_list[1]}g  ", "yellow"),
+                (f"Carbs {input_list[2]}g  ", "green"),
+                (f"Protein {input_list[3]}g  ", "red3"),
+                (f"Fiber {input_list[4]}g", "tan"),
+                ("\n"),
+            )
         )
     except Exception as e:
         console.print(f"Error: {e}")
@@ -212,10 +217,11 @@ def log_edit():
 def date_output():
     console = Console()
     try:
-        if args[1] == "check":
-            entered_date = date.fromisoformat(args[2]).strftime("%-m/%-d/%Y")
+        # if args[1] == "check":
+        # entered_date = date.fromisoformat(args[2]).strftime("%-m/%-d/%Y")
+        if input_date:
             console.print(
-                f"Prior - {entered_date}",
+                f"Prior - {input_date}",
                 style="bold italic red",
                 justify="center",
                 highlight=False,
@@ -224,7 +230,7 @@ def date_output():
         else:
             console.print(
                 f"Today - {todays_date}",
-                style="italic",
+                style="bold italic",
                 justify="center",
                 highlight=False,
             )
@@ -266,7 +272,7 @@ def main(args):
                 print("case _:")
                 return
 
-        date_output()  # need to fix how this is handled, currently not printing due to args
+        date_output()
         print()
         summary_print()
         print()
